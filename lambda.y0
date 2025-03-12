@@ -1,0 +1,38 @@
+(ns lambda)
+
+(all [v x]
+     [:definition v x] =>
+     (assert (lambda-expr x))
+     (fact (lambda-expr v)))
+
+(all [x]
+     (lambda-expr x ! x "is not a valid lambda expression"))
+
+(all [x]
+     (lambda-expr [:expr x]) <-
+     (lambda-expr x))
+
+(all [ps x]
+     (lambda-expr [:lambda_abst ps x]) <-
+     (given ps
+            (lambda-expr x)))
+
+(all [p ps]
+     [:params p & ps] =>
+     (fact (lambda-expr p))
+     [:params & ps])
+
+(all [f x]
+     (lambda-expr [:func_application f x]) <-
+     (lambda-expr f)
+     (lambda-expr x))
+
+(all [v x]
+     [:public_def [:definition v x]] =>
+     [:definition v x]
+     (export [v' v]
+             (fact (lambda-expr v'))))
+
+(all [d]
+     [:import [:dep d]] =>
+     (import d))
