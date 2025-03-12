@@ -92,3 +92,27 @@ type bar = (foo->foo)->foo->foo;
 ```status
 Success
 ```
+
+## Primitives
+
+Primitives are defined using the `:` operator. They are given a type but not a
+value. The value should come from elsewhere (e.g., a native implementation of a
+function written in a different programming language).
+
+```haskell
+type int64;
+int64_inc : int64 -> int64;
+```
+```status
+Success
+```
+
+Primitives are only valid if the type is a valid type.
+
+```haskell
+type int64;
+int64_inc : int64 -> invalid_type;
+```
+```status
+ERROR: Invalid type invalid_type in int64_inc : int64 -> invalid_type;
+```

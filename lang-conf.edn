@@ -7,11 +7,13 @@
             import = <'import'> dep <';'>
             dep = #'[a-z][a-z_0-9]*([.][a-z][a-z_0-9]*)*'
             
-            <def> = definition | public_def | type_def | type_alias_def
+            <def> = definition | public_def | type_def | type_alias_def |
+                    primitive_def
             definition = identifier <'='> expr <';'>
             public_def = <'public'> definition
             type_def = <'type'> identifier <';'>
             type_alias_def = <'type'> identifier <'='> type <';'>
+            primitive_def = identifier <':'> type <';'>
 
             <type> = func_type | type1
             <type1> = type_alias | <'('> type <')'>

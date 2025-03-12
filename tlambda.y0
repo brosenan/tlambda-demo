@@ -27,6 +27,12 @@
      (type t1)
      (type t2))
 
+;; Primitives
+
+(all [p t]
+     [:primitive_def p t] =>
+     (assert (type t)))
+
 
 ;;;;;;;;;;;;;;;;;;;;
 
