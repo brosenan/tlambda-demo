@@ -1,4 +1,4 @@
-{"lambda"
+{"tlambda"
  {;; Use an Instaparser
   :parser :insta
   ;; The grammar with a layout section
@@ -7,9 +7,16 @@
             import = <'import'> dep <';'>
             dep = #'[a-z][a-z_0-9]*([.][a-z][a-z_0-9]*)*'
             
-            <def> = definition | public_def
+            <def> = definition | public_def | type_def | type_alias_def
             definition = identifier <'='> expr <';'>
             public_def = <'public'> definition
+            type_def = <'type'> identifier <';'>
+            type_alias_def = <'type'> identifier <'='> type <';'>
+
+            <type> = func_type | type1
+            <type1> = type_alias | <'('> type <')'>
+            func_type = type1 <'->'> type
+            type_alias = identifier
             
             expr =  lambda_abst | app_expr
             <app_expr> = func_application | arg_expr
@@ -34,9 +41,9 @@
   ;; (e.g., a.b.c => a/b/c.ext)
   :relative-path-resolution :dots
   ;; The file extension for the source files
-  :file-ext "lambda"
+  :file-ext "tlambda"
   ;; The modules that define the language's semantics
-  :y0-modules ["lambda"]
+  :y0-modules ["tlambda"]
   ;; Read files using Clojure's slurp function.
   :reader :slurp
   ;; Stringify by extracting text from the source file

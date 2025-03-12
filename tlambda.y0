@@ -1,4 +1,34 @@
-(ns lambda)
+(ns tlambda)
+
+;; Types
+
+(all [t]
+     [:type_def t] =>
+     (fact (type-alias t (atomic-type t))))
+
+(all [a t]
+     (type-alias a t ! "Invalid type" a))
+
+(all [a t]
+     [:type_alias_def a t] =>
+     (assert (type t))
+     (fact (type-alias a t)))
+
+(all [t]
+     (type t ! "Invalid type" t))
+
+(all [a]
+     (type [:type_alias a]) <-
+     (exist [t]
+            (type-alias a t)))
+
+(all [t1 t2]
+     (type [:func_type t1 t2]) <-
+     (type t1)
+     (type t2))
+
+
+;;;;;;;;;;;;;;;;;;;;
 
 (all [v x]
      [:definition v x] =>
