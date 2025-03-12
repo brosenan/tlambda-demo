@@ -33,6 +33,12 @@
      [:primitive_def p t] =>
      (assert (type t)))
 
+;; Typed Definition
+
+(all [v t x]
+     [:typed_definition v t x] =>
+     (assert (type t)))
+
 
 ;;;;;;;;;;;;;;;;;;;;
 

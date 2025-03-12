@@ -7,8 +7,9 @@
             import = <'import'> dep <';'>
             dep = #'[a-z][a-z_0-9]*([.][a-z][a-z_0-9]*)*'
             
-            <def> = definition | public_def | type_def | type_alias_def |
+            <def> = typed_definition | public_def | type_def | type_alias_def |
                     primitive_def
+            typed_definition = identifier <':'> type <'='> expr <';'>
             definition = identifier <'='> expr <';'>
             public_def = <'public'> definition
             type_def = <'type'> identifier <';'>

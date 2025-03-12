@@ -116,3 +116,29 @@ int64_inc : int64 -> invalid_type;
 ```status
 ERROR: Invalid type invalid_type in int64_inc : int64 -> invalid_type;
 ```
+
+## Typed Definition
+
+A typed definition has the form `var : type = expr;`.
+
+```haskell
+type int64;
+int64_inc : int64 -> int64;
+plus_2 : int64 -> int64 = \x. int64_inc (int64_inc x);
+```
+```status
+Success
+```
+
+The type needs to be a valid type.
+
+```haskell
+type int64;
+int64_inc : int64 -> int64;
+plus_2 : int64 -> invalid_type = \x. int64_inc (int64_inc x);
+```
+```status
+ERROR: Invalid type invalid_type in plus_2 : int64 -> invalid_type = \x. int64_inc (int64_inc x);
+```
+
+As for the expression, this will be discussed in the following section.
