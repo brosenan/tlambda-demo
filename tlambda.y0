@@ -4,7 +4,7 @@
 
 (all [t]
      [:type_def t] =>
-     (fact (type-alias t (atomic-type t))))
+     (fact (type-alias t t)))
 
 (all [a t]
      (type-alias a t ! "Invalid type" a))
@@ -31,13 +31,50 @@
 
 (all [p t]
      [:primitive_def p t] =>
-     (assert (type t)))
+     (assert (type t))
+     (fact (typeof p t)))
 
 ;; Typed Definition
 
 (all [v t x]
      [:typed_definition v t x] =>
-     (assert (type t)))
+     (assert (type t)
+             (expr-of-type x t)))
+
+(all [x t]
+     (expr-of-type x t) <-
+     (exist [t']
+            (typeof x t')
+            (eq-type t t' ! "when inferring the type of" x)))
+
+(all [x t]
+     (typeof x t ! x "is undefined"))
+
+(all [x t]
+     (typeof [:expr x] t) <-
+     (typeof x t))
+
+;; Type Equality
+
+(all [t1 t2]
+     (eq-type t1 t2) <-
+     (exist [t1' t2']
+            (unalias-type t1 t1')
+            (unalias-type t2 t2')
+            (eq-unaliased-type t1' t2')))
+
+(all [t1 t2]
+     (eq-unaliased-type t1 t2) <-
+     (= t1 t2 ! "Type mismatch: expected" t1 "but inferred" t2))
+
+(all [t]
+     (unalias-type t t))
+
+(all [a t']
+     (unalias-type [:type_alias a] t') <-
+     (exist [t]
+            (type-alias a t)
+            (unalias-type t t')))
 
 
 ;;;;;;;;;;;;;;;;;;;;

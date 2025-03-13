@@ -123,8 +123,9 @@ A typed definition has the form `var : type = expr;`.
 
 ```haskell
 type int64;
-int64_inc : int64 -> int64;
-plus_2 : int64 -> int64 = \x. int64_inc (int64_inc x);
+long : int64;
+distance_to_moon : int64;
+distance_from_moon : int64 = distance_to_moon;
 ```
 ```status
 Success
@@ -134,11 +135,65 @@ The type needs to be a valid type.
 
 ```haskell
 type int64;
-int64_inc : int64 -> int64;
-plus_2 : int64 -> invalid_type = \x. int64_inc (int64_inc x);
+long : int64;
+distance_to_moon : int64;
+distance_from_moon : invalid_type = distance_to_moon;
 ```
 ```status
-ERROR: Invalid type invalid_type in plus_2 : int64 -> invalid_type = \x. int64_inc (int64_inc x);
+ERROR: Invalid type invalid_type in distance_from_moon : invalid_type = distance_to_moon;
 ```
 
-As for the expression, this will be discussed in the following section.
+As for the expression, this will be discussed in the following sections.
+
+## Type Equality
+
+A typed definition gives us the opportunity to specify type equality. The
+following examples will be of the form `foo : type1; bar : type2 = foo;`, for
+different values of `type1` and `type2`. Through this, we will explore which
+pairs of types equal one another.
+
+Atomic types equal themselves.
+
+```haskell
+type int64;
+foo : int64;
+bar : int64 = foo;
+```
+```status
+Success
+```
+
+And they are different from other atomic types.
+
+```haskell
+type int64;
+type int32;
+foo : int64;
+bar : int32 = foo;
+```
+```status
+ERROR: Type mismatch: expected int32 but inferred int64 when inferring the type of foo in bar : int32 = foo;
+```
+
+An alias to a type is considered equal to that type.
+
+```haskell
+type int64;
+type long = int64;
+foo : int64;
+bar : long = foo;
+```
+```status
+Success
+```
+
+```haskell
+type int64;
+type long = int64;
+foo : long;
+bar : int64 = foo;
+```
+```status
+Success
+```
+
