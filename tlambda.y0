@@ -90,14 +90,27 @@
             (eq-type u u2)
             (eq-type v v2)))
 
-;; Lambda Expressions
+;; Lambda Abstractions
 
 (all [v x t]
      (expr-of-type [:lambda_abst v x] t) <-
      (exist [t1 t2]
-            (unalias-type t [:func_type t1 t2] ! "Lambda abstraction with variable" v "defined with non-function type" t)
+            (unalias-type t [:func_type t1 t2]
+                          ! "Lambda abstraction with variable" v
+                          "defined with non-function type" t)
             (given (fact (typeof v t1))
                    (expr-of-type x t2))))
+
+;; Function Application
+(all [f x t]
+     (typeof [:func_application f x] t) <-
+     (exist [tf]
+            (typeof f tf)
+            (exist [t1]
+                   (unalias-type tf [:func_type t1 t]
+                                 ! "Function application of" f
+                                 "with non-function type" tf)
+                   (expr-of-type x t1))))
 
 ;;;;;;;;;;;;;;;;;;;;
 

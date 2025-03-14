@@ -255,7 +255,7 @@ bar : int64 -> int64 = foo;
 Success
 ```
 
-## Lambda Expressions
+## Lambda Abstractions
 
 A laumbda abstraction, of the form `\x. y` has the type `t1->t2`, given that `y`
 is of type `t2` if `x` is of type `t1`.
@@ -331,6 +331,96 @@ Lambda abstractions are associative.
 type int64;
 type string;
 bar : int64->string->int64 = \x. \s. x;
+```
+```status
+Success
+```
+
+## Function Application
+
+Function application of the form `f x`, given that `f` is of type `t1->t2`
+and `x` is of type `t1` is of type `t2`.
+
+```haskell
+type int64;
+type string;
+foo : int64 -> string;
+bar : int64;
+baz : string = foo bar;
+```
+```status
+Success
+```
+
+If the function is not of a function-type, an error is provided.
+
+```haskell
+type int64;
+type string;
+type not_a_function;
+foo : not_a_function;
+bar : int64;
+baz : string = foo bar;
+```
+```status
+ERROR: Function application of foo with non-function type not_a_function in baz : string = foo bar;
+```
+
+An alias to a function type is, of-course, OK.
+
+```haskell
+type int64;
+type string;
+type is_a_function = int64->string;
+foo : is_a_function;
+bar : int64;
+baz : string = foo bar;
+```
+```status
+Success
+```
+
+The argument is checked to be of the function's domain type.
+
+```haskell
+type int64;
+type int32;
+type string;
+foo : int64 -> string;
+bar : int32;
+baz : string = foo bar;
+```
+```status
+ERROR: Type mismatch: expected int64 but inferred int32 when inferring the type of bar in baz : string = foo bar;
+```
+
+The resulting type is the function's range type.
+
+```haskell
+type int64;
+type string;
+foo : int64 -> string;
+bar : int64;
+baz : int64 = foo bar;
+```
+```status
+ERROR: Type mismatch: expected int64 but inferred string when inferring the type of foo bar in baz : int64 = foo bar;
+```
+
+Function application is right-associative.
+
+```haskell
+type int8;
+a1 : int8;
+type int16;
+a2 : int16;
+type int32;
+a3 : int32;
+type int64;
+a4 : int64;
+type string;
+foo : int8 -> int16 -> int32 -> int64 -> string;
+bar : string = foo a1 a2 a3 a4;
 ```
 ```status
 Success
