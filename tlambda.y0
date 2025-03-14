@@ -150,3 +150,15 @@
 (all [d]
      [:import [:dep d]] =>
      (import d))
+
+;; Parametric Type
+
+(all [n ps t]
+     [:parametric_type_def [:parametric_type n & ps] t] =>
+     (assert (given (deftypes ps)
+                    (type t))))
+
+(all [p ps]
+     (deftypes [p & ps]) =>
+     (fact (type-alias p p))
+     (deftypes ps))

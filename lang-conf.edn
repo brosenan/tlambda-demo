@@ -8,18 +8,20 @@
             dep = #'[a-z][a-z_0-9]*([.][a-z][a-z_0-9]*)*'
             
             <def> = typed_definition | public_def | type_def | type_alias_def |
-                    primitive_def
+                    primitive_def | parametric_type_def
             typed_definition = identifier <':'> type <'='> expr <';'>
             definition = identifier <'='> expr <';'>
             public_def = <'public'> definition
             type_def = <'type'> identifier <';'>
             type_alias_def = <'type'> identifier <'='> type <';'>
             primitive_def = identifier <':'> type <';'>
+            parametric_type_def = <'type'> parametric_type <'='> type <';'>
 
             <type> = func_type | type1
             <type1> = type_alias | <'('> type <')'>
             func_type = type1 <'->'> type
             type_alias = identifier
+            parametric_type = identifier <'['> identifier (<','> identifier)* <']'>
             
             expr =  lambda_abst | app_expr
             <app_expr> = func_application | arg_expr

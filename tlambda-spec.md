@@ -425,3 +425,43 @@ bar : string = foo a1 a2 a3 a4;
 ```status
 Success
 ```
+
+## Parametric Polymorphism
+
+Parametric polymorphism is a type system's ability to express type expressions
+that can contain type parameters, allowing functions to accept infinitely many
+types.
+
+`tlambda`'s implementation of parametric polymorphism is loosely based on
+[System F](https://en.wikipedia.org/wiki/System_F).
+
+### Parametric Types
+
+A parametric type of the form `name[param, ...]` can be defined as follows:
+
+```haskell
+type int64;
+type Foo[x, y] = int64;
+```
+```status
+Success
+```
+
+The right-hand side must be a type.
+
+```haskell
+type Foo[x, y] = not_a_type;
+```
+```status
+ERROR: Invalid type not_a_type in type Foo[x, y] = not_a_type;
+```
+
+The right-hand side may use the type parameters.
+
+```haskell
+type int64;
+type Foo[x, y] = x->y->x;
+```
+```status
+Success
+```
