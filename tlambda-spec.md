@@ -254,3 +254,84 @@ bar : int64 -> int64 = foo;
 ```status
 Success
 ```
+
+## Lambda Expressions
+
+A laumbda abstraction, of the form `\x. y` has the type `t1->t2`, given that `y`
+is of type `t2` if `x` is of type `t1`.
+
+In the following example we define a function `bar` that takes an `int64` and
+returns the value of constant `foo`.
+
+```haskell
+type int64;
+foo : int64;
+bar : int64 -> int64 = \x. foo;
+```
+```status
+Success
+```
+
+The body of the lambda expression must match the range of the function.
+
+```haskell
+type int64;
+type float32;
+foo : float32;
+bar : int64 -> int64 = \x. foo;
+```
+```status
+ERROR: Type mismatch: expected int64 but inferred float32 when inferring the type of foo in bar : int64 -> int64 = \x. foo;
+```
+
+The parameter can be used in the body, and is typed based on the domain type.
+
+```haskell
+type int64;
+bar : int64 -> int64 = \x. x;
+```
+```status
+Success
+```
+
+```haskell
+type int64;
+type int32;
+bar : int64 -> int32 = \x. x;
+```
+```status
+ERROR: Type mismatch: expected int32 but inferred int64 when inferring the type of x in bar : int64 -> int32 = \x. x;
+```
+
+Lambda abstractions work with type aliases
+
+```haskell
+type int64;
+type long_func = int64 -> int64;
+bar : long_func = \x. x;
+```
+```status
+Success
+```
+
+A special error message is provided when trying to define a lambda absraction
+with a non-function type.
+
+```haskell
+type not_a_func;
+bar : not_a_func = \x. x;
+```
+```status
+ERROR: Lambda abstraction with variable x defined with non-function type not_a_func in bar : not_a_func = \x. x;
+```
+
+Lambda abstractions are associative.
+
+```haskell
+type int64;
+type string;
+bar : int64->string->int64 = \x. \s. x;
+```
+```status
+Success
+```

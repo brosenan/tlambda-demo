@@ -51,6 +51,10 @@
      (typeof x t ! x "is undefined"))
 
 (all [x t]
+     (expr-of-type [:expr x] t) <-
+     (expr-of-type x t))
+
+(all [x t]
      (typeof [:expr x] t) <-
      (typeof x t))
 
@@ -85,6 +89,15 @@
                           "but inferred non-function type" t)
             (eq-type u u2)
             (eq-type v v2)))
+
+;; Lambda Expressions
+
+(all [v x t]
+     (expr-of-type [:lambda_abst v x] t) <-
+     (exist [t1 t2]
+            (unalias-type t [:func_type t1 t2] ! "Lambda abstraction with variable" v "defined with non-function type" t)
+            (given (fact (typeof v t1))
+                   (expr-of-type x t2))))
 
 ;;;;;;;;;;;;;;;;;;;;
 

@@ -25,8 +25,7 @@
             <app_expr> = func_application | arg_expr
             <arg_expr> = identifier | <'('> expr <')'>
 
-            lambda_abst = <'\\\\'> params <'.'> expr
-            params = identifier+
+            lambda_abst = <'\\\\'> identifier <'.'> expr
 
             func_application = app_expr arg_expr
             
