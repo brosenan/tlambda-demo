@@ -156,9 +156,39 @@
 (all [n ps t]
      [:parametric_type_def [:parametric_type n & ps] t] =>
      (assert (given (deftypes ps)
-                    (type t))))
+                    (type t)))
+     (fact (parametric-type n ps t)))
 
 (all [p ps]
      (deftypes [p & ps]) =>
      (fact (type-alias p p))
      (deftypes ps))
+
+(all [n as]
+     (type [:parametric_type n & as]) <-
+     (exist [ps t]
+            (parametric-type n ps t)))
+
+(all [n ps t]
+     (parametric-type n ps t ! "Undefined parametric type" n))
+
+(all [n as t]
+     (unalias-type [:parametric_type n & as] t) <-
+     (exist [ps t']
+            (parametric-type n ps t')
+            (given (type-replacements ps as)
+                   (replace-types t' t))))
+
+(all [p ps a as]
+     (type-replacements [p & ps] [a & as]) =>
+     (fact (type-alias p a))
+     (type-replacements ps as))
+
+(all [t t']
+     (replace-types t t') <-
+     (unalias-type t t'))
+
+(all [t1 t2 t1' t2']
+     (replace-types [:func_type t1 t2] [:func_type t1' t2']) <-
+     (replace-types t1 t1')
+     (replace-types t2 t2'))

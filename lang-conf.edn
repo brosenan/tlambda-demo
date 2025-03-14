@@ -18,7 +18,7 @@
             parametric_type_def = <'type'> parametric_type <'='> type <';'>
 
             <type> = func_type | type1
-            <type1> = type_alias | <'('> type <')'>
+            <type1> = type_alias | parametric_type | <'('> type <')'>
             func_type = type1 <'->'> type
             type_alias = identifier
             parametric_type = identifier <'['> identifier (<','> identifier)* <']'>

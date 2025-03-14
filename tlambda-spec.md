@@ -465,3 +465,46 @@ type Foo[x, y] = x->y->x;
 ```status
 Success
 ```
+
+#### Parametric Type Equality
+
+A parametric type must is only valid if defined.
+
+```haskell
+f : Foo[x, y];
+```
+```status
+ERROR: Undefined parametric type Foo in f : Foo[x, y];
+```
+
+A parametric type equals its underlying definition under the substitution of the
+parameters for the arguments.
+
+```haskell
+type int64;
+type int32;
+type Foo[x, y] = x->y->x;
+f : Foo[int64, int32];
+a : int64;
+b : int32;
+res : int64 = f a b;
+```
+```status
+Success
+```
+
+The following is a negative example:
+
+```haskell
+type int64;
+type int32;
+type Foo[x, y] = x->y->x;
+f : Foo[int64, int32];
+a : int64;
+b : int32;
+res : int32 = f a b;
+```
+```status
+ERROR: Type mismatch: expected int32 but inferred int64 when inferring the type of f a b in res : int32 = f a b;
+```
+
