@@ -77,6 +77,15 @@
             (unalias-type t t')))
 
 
+(all [u v t]
+     (eq-type [:func_type u v] t) <-
+     (exist [u2 v2]
+            (unalias-type t [:func_type u2 v2]
+                          ! "Type mismatch: expected type" u "->" v
+                          "but inferred non-function type" t)
+            (eq-type u u2)
+            (eq-type v v2)))
+
 ;;;;;;;;;;;;;;;;;;;;
 
 (all [v x]

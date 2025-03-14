@@ -197,3 +197,60 @@ bar : int64 = foo;
 Success
 ```
 
+A function type is equal to another if both the domain and range types are
+equal.
+
+```haskell
+type int64;
+foo : int64 -> int64;
+bar : int64 -> int64 = foo;
+```
+```status
+Success
+```
+
+It is not equal if the other type is not a function type.
+
+```haskell
+type int64;
+foo : int64;
+bar : int64 -> int64 = foo;
+```
+```status
+ERROR: Type mismatch: expected type int64 -> int64 but inferred non-function type int64 when inferring the type of foo in bar : int64 -> int64 = foo;
+```
+
+
+It is not equal if either the domain or the range are not equal.
+
+```haskell
+type int64;
+type int32;
+foo : int64 -> int64;
+bar : int32 -> int64 = foo;
+```
+```status
+ERROR: Type mismatch: expected int32 but inferred int64 when inferring the type of foo in bar : int32 -> int64 = foo;
+```
+
+```haskell
+type int64;
+type int32;
+foo : int64 -> int64;
+bar : int64 -> int32 = foo;
+```
+```status
+ERROR: Type mismatch: expected int32 but inferred int64 when inferring the type of foo in bar : int64 -> int32 = foo;
+```
+
+Here too, equality takes aliases into account.
+
+```haskell
+type int64;
+type long_func = int64 -> int64;
+foo : long_func;
+bar : int64 -> int64 = foo;
+```
+```status
+Success
+```
